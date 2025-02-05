@@ -1,0 +1,22 @@
+// TODO:: Move to Variables File
+$color-brand: #007bff;
+$color-bg-light: #f0f8ff;
+$color-border-default: #cccccc;
+
+.file-drop {
+  &__container {
+    border: 2px dashed $color-border-default;
+    padding: 16px;
+    text-align: center;
+  }
+  &__text {
+    color: $color-brand;
+    font-weight: bold;
+    margin: 0;
+    padding: 16px;
+  }
+  &__active {
+    border-color: $color-brand;
+    background-color: $color-bg-light;
+  }
+}

@@ -1,0 +1,38 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>List of Pins</h4>
+    <div class="d-flex gap-3">
+      <button class="btn btn-outline-primary" (click)="openAddCustomerModal()">
+        + Add Customer
+      </button>
+      <button class="btn btn-primary" (click)="openAddPinModal()">
+        + Add Pin
+      </button>
+    </div>
+  </div>
+
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Title</th>
+        <th>Image</th>
+        <th>Collaboratory</th>
+        <th>Privacy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pin of [].constructor(3)">
+        <td>P1</td>
+        <td>
+          <img src="https://placehold.co/100x60" alt="Pin Image" />
+        </td>
+        <td>
+          <div *ngFor="let collab of [].constructor(3)">C1</div>
+        </td>
+        <td>
+          <span> Public </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

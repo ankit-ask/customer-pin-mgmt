@@ -1,0 +1,73 @@
+<form class="p-5" [formGroup]="pinForm" (ngSubmit)="submitForm()">
+  <div class="form-group mb-3">
+    <label>Title*</label>
+    <input
+      type="text"
+      class="form-control"
+      formControlName="title"
+      placeholder="Enter Pin Title"
+      required
+    />
+  </div>
+
+  <div class="form-group mb-3">
+    <label>Select Image*</label>
+    <div class="file-drop__container">
+      <div
+        ng2FileDrop
+        [uploader]="uploader"
+        [ngClass]="{ 'file-drop__active': isFileOver }"
+        (fileOver)="onFileOver($event)"
+        (onFileDrop)="onFileDrop($event)"
+        class="form-control"
+      >
+        <p class="file-drop__text">Drag & Drop Image Here</p>
+      </div>
+    </div>
+    <ul class="list-group mt-2">
+      <li class="list-group-item" *ngFor="let file of uploader.queue">
+        {{ file.file.name }} - {{ file.file.size / 1024 | number : "1.0" }} KB
+        <button
+          class="btn btn-danger btn-sm float-right"
+          (click)="file.remove()"
+        >
+          Remove
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="form-group mb-3">
+    <label>Select collaboratories*</label>
+    <ngx-select
+      [items]="collaboratories"
+      [optionTextField]="'name'"
+      formControlName="collaboratories"
+      [multiple]="true"
+    ></ngx-select>
+  </div>
+
+  <div class="form-group mb-3">
+    <label>Privacy*</label><br />
+    <div class="form-check form-check-inline">
+      <input
+        class="form-check-input"
+        type="radio"
+        formControlName="privacy"
+        value="Public"
+      />
+      <label class="form-check-label">Public</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input
+        class="form-check-input"
+        type="radio"
+        formControlName="privacy"
+        value="Private"
+      />
+      <label class="form-check-label">Private</label>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Create Pin</button>
+</form>
