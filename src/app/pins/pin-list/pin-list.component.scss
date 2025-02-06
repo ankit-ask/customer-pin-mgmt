@@ -1,0 +1,95 @@
+// Mixin for Responsive
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == mobile {
+    @media (max-width: 768px) {
+      @content;
+    }
+  }
+}
+
+header {
+  padding: 1rem 2rem;
+  background-color: rgba(13, 110, 253, 0.05);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  @include respond-to(mobile) {
+    flex-direction: column;
+    gap: 8px;
+    padding-inline: 0;
+    .btn-grp {
+      width: 100%;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 1rem 2rem 0;
+    }
+  }
+  h4 {
+    font-weight: bold;
+    margin: 0;
+  }
+}
+
+.pin {
+  &__list {
+    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    table {
+      margin-bottom: 0;
+    }
+  }
+}
+
+table {
+  @include respond-to(mobile) {
+    font-size: 0.9rem;
+  }
+}
+
+img {
+  width: 120px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  @include respond-to(mobile) {
+    width: 60px;
+  }
+}
+
+.empty {
+  &__container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100vh - 120px);
+    @include respond-to(mobile) {
+      height: calc(100vh - 160px);
+    }
+    .card {
+      text-align: center;
+      width: 50%;
+      min-width: 320px;
+      i {
+        font-size: 64px;
+      }
+    }
+  }
+}
+
+.reset {
+  &__wrapper {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    padding-block: 16px;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.5) 100%
+    );
+  }
+  &__link {
+    color: red;
+    font-size: 0.9rem;
+  }
+}

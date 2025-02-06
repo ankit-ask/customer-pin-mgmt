@@ -11,5 +11,5 @@ export const routes: Routes = [
     path: 'pins',
     loadChildren: () => import('./pins/pins.module').then((m) => m.PinsModule),
   },
-  { path: '**', redirectTo: '/pins' }, // Redirect unknown routes
+  { path: '**', redirectTo: '/pins' }, // Redirect unknown routes to pins
 ];

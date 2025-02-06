@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { FileUploader, FileUploadModule } from 'ng2-file-upload';
+import { FileUploader } from 'ng2-file-upload';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import appConstant from '../utils/app.constant';
 
-// TODO::API endpoint (Set up later)
-const URL = 'https://ankitsing.co/api/';
+// Media Upload API endpoint
+const URL = appConstant.URL.MEDIA;
 
 @Component({
   selector: 'app-pin-form',
@@ -11,7 +13,8 @@ const URL = 'https://ankitsing.co/api/';
   styleUrl: './pin-form.component.scss',
 })
 export class PinFormComponent {
-  @Input() pinData: any = null; // For edit mode
+  activeModal = inject(NgbActiveModal);
+  @Input() customers: any[] = [];
   @Output() pinFormSubmit = new EventEmitter<any>();
 
   pinForm!: FormGroup;
@@ -21,15 +24,9 @@ export class PinFormComponent {
   });
 
   isFileOver: boolean = false;
+  isLoading: boolean = false;
+  submitted: boolean = false;
 
-  // TODO::Replace with dynamic data
-  collaboratories = [
-    { id: 1, name: 'Customer 1' },
-    { id: 2, name: 'Customer 2' },
-    { id: 3, name: 'Customer 3' },
-  ];
-
-  itemId: any;
   response: string;
 
   constructor(private fb: FormBuilder) {
@@ -39,14 +36,17 @@ export class PinFormComponent {
       removeAfterUpload: true,
       autoUpload: false,
       queueLimit: 1,
-      maxFileSize: 5 * 1024 * 1024, // 5MB limit
+      maxFileSize: 2 * 1024 * 1024, // 2MB limit
     });
 
     this.uploader.onAfterAddingFile = (file) => {
       file.withCredentials = false;
     };
     this.response = '';
-    this.uploader.response.subscribe((res) => (this.response = res));
+    // this.uploader.response.subscribe((res) => (this.response = res));
+    this.uploader.onSuccessItem = (item, response, status, headers) => {
+      this.response = response;
+    };
   }
 
   ngOnInit(): void {
@@ -55,13 +55,10 @@ export class PinFormComponent {
 
   initializeForm() {
     this.pinForm = this.fb.group({
-      title: [this.pinData?.title || '', Validators.required],
+      title: ['', Validators.required],
       image: [null, Validators.required],
-      collaboratories: [
-        this.pinData?.collaboratories || [],
-        Validators.required,
-      ],
-      privacy: [this.pinData?.privacy || 'Public', Validators.required],
+      collaboratories: [[], Validators.required],
+      privacy: ['Public', Validators.required],
     });
   }
 
@@ -69,7 +66,7 @@ export class PinFormComponent {
     if (files) {
       Array.from(files).forEach((file) => {
         this.uploader.addToQueue([file]);
-        // this.pinForm.patchValue({ image: file });
+        this.pinForm.patchValue({ image: file });
       });
     }
     this.isFileOver = false;
@@ -81,8 +78,51 @@ export class PinFormComponent {
   }
 
   submitForm() {
-    // if (this.pinForm.valid) {
-    this.pinFormSubmit.emit(this.pinForm.value);
-    // }
+    this.submitted = true;
+
+    if (this.pinForm.valid && this.uploader.queue.length > 0) {
+      this.isLoading = true;
+      // Start the upload
+      this.uploader.uploadAll();
+
+      // Emit form data after upload response
+      this.uploader.onCompleteItem = () => {
+        try {
+          // const uploadedFile = this.uploader.queue[0].file;
+          const uploadedData = JSON.parse(this.response);
+          // const uploadedData = JSON.parse((uploadedFile as any).response);
+
+          if (uploadedData.secure_url) {
+            this.pinForm.patchValue({ image: uploadedData.secure_url });
+          }
+
+          this.pinFormSubmit.emit(this.pinForm.value);
+          this.isLoading = true;
+        } catch (error) {
+          this.isLoading = true;
+          alert(appConstant.APP_MESSAGES.UPLOAD_ERROR + error);
+        }
+      };
+    }
+  }
+
+  // Handling field level errors
+  getErrorMessage(controlName: string): string {
+    const control = this.pinForm.get(controlName);
+    if (control?.invalid && control.touched) {
+      switch (controlName) {
+        case 'title':
+          return 'Title is required.';
+        case 'image':
+          return 'Image selection is required.';
+        case 'collaboratories':
+          return 'At least one collaboratory must be selected.';
+        case 'privacy':
+          return 'Privacy selection is required.';
+        default:
+          return '';
+      }
+    }
+    return '';
   }
 }

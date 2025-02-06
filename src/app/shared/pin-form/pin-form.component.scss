@@ -1,5 +1,6 @@
 // TODO:: Move to Variables File
 $color-brand: #007bff;
+$color-text-alt: #9c9c9c;
 $color-bg-light: #f0f8ff;
 $color-border-default: #cccccc;
 
@@ -11,9 +12,12 @@ $color-border-default: #cccccc;
   }
   &__text {
     color: $color-brand;
-    font-weight: bold;
     margin: 0;
     padding: 16px;
+    &--alt {
+      font-size: 0.75rem;
+      color: $color-text-alt;
+    }
   }
   &__active {
     border-color: $color-brand;

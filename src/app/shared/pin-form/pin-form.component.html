@@ -1,73 +1,110 @@
-<form class="p-5" [formGroup]="pinForm" (ngSubmit)="submitForm()">
-  <div class="form-group mb-3">
-    <label>Title*</label>
-    <input
-      type="text"
-      class="form-control"
-      formControlName="title"
-      placeholder="Enter Pin Title"
-      required
-    />
-  </div>
-
-  <div class="form-group mb-3">
-    <label>Select Image*</label>
-    <div class="file-drop__container">
-      <div
-        ng2FileDrop
-        [uploader]="uploader"
-        [ngClass]="{ 'file-drop__active': isFileOver }"
-        (fileOver)="onFileOver($event)"
-        (onFileDrop)="onFileDrop($event)"
+<div class="modal-header">
+  <h4 class="modal-title">Create New Pin</h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  ></button>
+</div>
+<div class="modal-body">
+  <form class="p-2" [formGroup]="pinForm" (ngSubmit)="submitForm()">
+    <div class="form-group mb-3">
+      <label class="required">Title</label>
+      <input
+        type="text"
         class="form-control"
-      >
-        <p class="file-drop__text">Drag & Drop Image Here</p>
+        formControlName="title"
+        placeholder="Enter Pin Title"
+        required
+      />
+      <div *ngIf="getErrorMessage('title')" class="error-text">
+        {{ getErrorMessage("title") }}
       </div>
     </div>
-    <ul class="list-group mt-2">
-      <li class="list-group-item" *ngFor="let file of uploader.queue">
-        {{ file.file.name }} - {{ file.file.size / 1024 | number : "1.0" }} KB
-        <button
-          class="btn btn-danger btn-sm float-right"
-          (click)="file.remove()"
+
+    <div class="form-group mb-3">
+      <label class="required">Select Image</label>
+      <div class="file-drop__container">
+        <div
+          ng2FileDrop
+          [uploader]="uploader"
+          [ngClass]="{ 'file-drop__active': isFileOver }"
+          (fileOver)="onFileOver($event)"
+          (onFileDrop)="onFileDrop($event)"
+          class="form-control"
         >
-          Remove
-        </button>
-      </li>
-    </ul>
-  </div>
-
-  <div class="form-group mb-3">
-    <label>Select collaboratories*</label>
-    <ngx-select
-      [items]="collaboratories"
-      [optionTextField]="'name'"
-      formControlName="collaboratories"
-      [multiple]="true"
-    ></ngx-select>
-  </div>
-
-  <div class="form-group mb-3">
-    <label>Privacy*</label><br />
-    <div class="form-check form-check-inline">
-      <input
-        class="form-check-input"
-        type="radio"
-        formControlName="privacy"
-        value="Public"
-      />
-      <label class="form-check-label">Public</label>
+          <p class="file-drop__text">Drag & Drop Image Here</p>
+          <p class="file-drop__text--alt">Max file size allowed is 2MB</p>
+        </div>
+      </div>
+      <ul class="list-group mt-2">
+        <li class="list-group-item" *ngFor="let file of uploader.queue">
+          {{ file.file.name }} - {{ file.file.size / 1024 | number : "1.0" }} KB
+          <button
+            class="btn btn-danger btn-sm float-right"
+            (click)="file.remove()"
+          >
+            Remove
+          </button>
+        </li>
+      </ul>
+      <div *ngIf="getErrorMessage('image')" class="error-text">
+        {{ getErrorMessage("image") }}
+      </div>
     </div>
-    <div class="form-check form-check-inline">
-      <input
-        class="form-check-input"
-        type="radio"
-        formControlName="privacy"
-        value="Private"
-      />
-      <label class="form-check-label">Private</label>
-    </div>
-  </div>
 
-  <button type="submit" class="btn btn-primary">Create Pin</button>
-</form>
+    <div class="form-group mb-3">
+      <label class="required">Select Collaboratories</label>
+      <ngx-select
+        [items]="customers"
+        [optionTextField]="'name'"
+        formControlName="collaboratories"
+        [multiple]="true"
+      ></ngx-select>
+      <div *ngIf="getErrorMessage('collaboratories')" class="error-text">
+        {{ getErrorMessage("collaboratories") }}
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <label class="required">Privacy</label><br />
+      <div class="form-check form-check-inline">
+        <input
+          class="form-check-input"
+          type="radio"
+          formControlName="privacy"
+          value="Public"
+        />
+        <label class="form-check-label">Public</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input
+          class="form-check-input"
+          type="radio"
+          formControlName="privacy"
+          value="Private"
+        />
+        <label class="form-check-label">Private</label>
+      </div>
+      <div *ngIf="getErrorMessage('privacy')" class="error-text">
+        {{ getErrorMessage("privacy") }}
+      </div>
+    </div>
+
+    <div *ngIf="submitted && pinForm.invalid" class="error-text mb-3">
+      Please fill all the required details correctly!
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 border-top pt-3">
+      <button type="submit" class="btn btn-primary">
+        <span
+          *ngIf="isLoading"
+          class="spinner-border spinner-border-sm"
+          aria-hidden="true"
+        ></span>
+        Create Pin
+      </button>
+    </div>
+  </form>
+</div>
