@@ -25,17 +25,17 @@
 
     <div class="form-group mb-3">
       <label class="required">Select Image</label>
-      <div class="file-drop__container">
+      <div class="p-3 text-center rounded file-drop__container">
         <div
           ng2FileDrop
           [uploader]="uploader"
-          [ngClass]="{ 'file-drop__active': isFileOver }"
+          [ngClass]="{ 'border-primary bg-light': isFileOver }"
           (fileOver)="onFileOver($event)"
           (onFileDrop)="onFileDrop($event)"
           class="form-control"
         >
-          <p class="file-drop__text">Drag & Drop Image Here</p>
-          <p class="file-drop__text--alt">Max file size allowed is 2MB</p>
+          <p class="m-0 p-3 text-primary">Drag & Drop Image Here</p>
+          <p class="text-muted">Max file size allowed is 2MB</p>
         </div>
       </div>
       <ul class="list-group mt-2">

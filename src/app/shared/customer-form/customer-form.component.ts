@@ -1,6 +1,6 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CustomerService } from '../../services/customer.service';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -9,7 +9,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrl: './customer-form.component.scss',
 })
 export class CustomerFormComponent {
-  @Output() customerFormSubmit = new EventEmitter<any>();
   activeModal = inject(NgbActiveModal);
   countries: any[] = [];
   regions: any[] = [];
@@ -53,7 +52,7 @@ export class CustomerFormComponent {
   submitForm() {
     this.submitted = true;
     if (this.customerForm.valid) {
-      this.customerFormSubmit.emit(this.customerForm.value);
+      this.activeModal.close(this.customerForm.value);
     }
   }
 

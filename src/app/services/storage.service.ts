@@ -1,15 +1,35 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
+  private customersSubject = new BehaviorSubject<any[]>(
+    this.getArray('customers')
+  );
+  private pinsSubject = new BehaviorSubject<any[]>(this.getArray('pins'));
+
+  customers$ = this.customersSubject.asObservable();
+  pins$ = this.pinsSubject.asObservable();
+
   // Add a single item to an array in local storage
   addToArray<T>(key: string, newItem: T): void {
     let existingArray: T[] = this.getArray<T>(key);
-    existingArray.push(newItem);
-    this.setItem(key, existingArray);
+    const updatedArray = [...existingArray, newItem];
+    this.setItem(key, updatedArray);
+
+    if (key === 'customers') {
+      this.customersSubject.next(updatedArray);
+    } else if (key === 'pins') {
+      this.pinsSubject.next(updatedArray);
+    }
   }
+  // addToArray<T>(key: string, newItem: T): void {
+  //   let existingArray: T[] = this.getArray<T>(key);
+  //   existingArray.push(newItem);
+  //   this.setItem(key, existingArray);
+  // }
 
   // Set item in local storage
   setItem(key: string, value: any): void {

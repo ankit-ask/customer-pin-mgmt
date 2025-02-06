@@ -1,8 +1,9 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FileUploader } from 'ng2-file-upload';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import appConstant from '../utils/app.constant';
+import { Customer } from '../utils/customers.models';
 
 // Media Upload API endpoint
 const URL = appConstant.URL.MEDIA;
@@ -14,8 +15,7 @@ const URL = appConstant.URL.MEDIA;
 })
 export class PinFormComponent {
   activeModal = inject(NgbActiveModal);
-  @Input() customers: any[] = [];
-  @Output() pinFormSubmit = new EventEmitter<any>();
+  @Input() customers: Customer[] = [];
 
   pinForm!: FormGroup;
   uploader: FileUploader = new FileUploader({
@@ -43,7 +43,6 @@ export class PinFormComponent {
       file.withCredentials = false;
     };
     this.response = '';
-    // this.uploader.response.subscribe((res) => (this.response = res));
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       this.response = response;
     };
@@ -73,7 +72,7 @@ export class PinFormComponent {
   }
 
   // Change styles when file is dragged over
-  onFileOver(event: any): void {
+  onFileOver(event: Event): void {
     this.isFileOver = true;
   }
 
@@ -88,15 +87,13 @@ export class PinFormComponent {
       // Emit form data after upload response
       this.uploader.onCompleteItem = () => {
         try {
-          // const uploadedFile = this.uploader.queue[0].file;
           const uploadedData = JSON.parse(this.response);
-          // const uploadedData = JSON.parse((uploadedFile as any).response);
 
           if (uploadedData.secure_url) {
             this.pinForm.patchValue({ image: uploadedData.secure_url });
           }
 
-          this.pinFormSubmit.emit(this.pinForm.value);
+          this.activeModal.close(this.pinForm.value);
           this.isLoading = true;
         } catch (error) {
           this.isLoading = true;

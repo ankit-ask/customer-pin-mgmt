@@ -1,0 +1,8 @@
+.empty {
+  &__container {
+    height: calc(100vh - 10rem);
+    .card {
+      min-width: 320px;
+    }
+  }
+}
